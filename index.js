@@ -3,7 +3,7 @@ const mineflayer = require('mineflayer');
 const serverConfig = {
     host: 'play.bananasmp.net',
     port: 25565,
-    username: 'FLAMEYT9819', // Replace with your cracked username
+    username: 'FLAMEYT9819', // Replace with your username
     version: '1.21.11'
 };
 
@@ -13,20 +13,18 @@ function createBot() {
     bot.on('spawn', () => {
         console.log('Bot spawned in lobby.');
 
-        // Step 1: Auto login after 3 seconds
+        // Step 1: Auto login
         setTimeout(() => {
-            bot.chat('/login 9991311456'); // Replace with your actual password
+            bot.chat('/login 9991311456'); // Replace with your password
             console.log('Sent login command. Waiting for GUI...');
         }, 3000);
     });
 
-    // Step 2: Handle the Chest GUI opening automatically
+    // Step 2: Handle Chest GUI (Lifesteal selection)
     bot.on('windowOpen', async (window) => {
         console.log('GUI Menu opened! Looking for Lifesteal...');
 
-        // Give the window a brief moment to load all items
         setTimeout(() => {
-            // Find the item slot containing "Red Dye" or named "lifesteal"
             const lifestealSlot = window.slots.find(item => 
                 item && (
                     item.name.includes('red_dye') || 
@@ -35,19 +33,19 @@ function createBot() {
             );
 
             if (lifestealSlot) {
-                console.log(`Found Lifesteal at slot ${lifestealSlot.slot}! Clicking it now...`);
-                // Left click on the item slot
+                console.log(`Found Lifesteal at slot ${lifestealSlot.slot}! Clicking...`);
                 bot.clickWindow(lifestealSlot.slot, 0, 0);
-            } else {
-                console.log('Could not find Red Dye / Lifesteal in the menu. Printing available items:');
-                window.slots.forEach(item => {
-                    if (item) console.log(`Slot ${item.slot}: ${item.name} | CustomName: ${item.customName}`);
-                });
             }
         }, 1500);
     });
 
-    // Step 3: Auto-eat logic when hunger drops
+    // Resource Pack / Shaders Auto-Accept Code (PASTED HERE)
+    bot.on('resourcePack', (url, hash) => {
+        console.log('Resource pack detected. Auto-accepting...');
+        bot.acceptResourcePack();
+    });
+
+    // Step 3: Auto-eat logic
     bot.on('physicsTick', () => {
         if (bot.food < 18) {
             const item = bot.inventory.items().find(i => 
@@ -69,7 +67,7 @@ function createBot() {
         }
     });
 
-    // Step 4: Auto-reconnect on kick/crash
+    // Step 4: Auto-reconnect
     bot.on('end', () => {
         console.log('Bot disconnected. Reconnecting in 10 seconds...');
         setTimeout(createBot, 10000);
