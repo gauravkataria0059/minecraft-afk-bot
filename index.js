@@ -4,7 +4,7 @@ const serverConfig = {
     host: 'play.bananasmp.net',
     port: 25565,
     username: 'FLAMEYT9819',
-    version: false // Isse server version apne aap auto-detect ho jayega
+    version: 1.21.11// Isse server version apne aap auto-detect ho jayega
 };
 
 function createBot() {
@@ -66,7 +66,7 @@ function createBot() {
     // Auto Reconnect if kicked
     bot.on('end', () => {
         console.log('Bot disconnected! Reconnecting in 10 seconds...');
-        setTimeout(createBot, 10000);
+        setTimeout(createBot, 1000000);
     });
 
     bot.on('error', (err) => {
