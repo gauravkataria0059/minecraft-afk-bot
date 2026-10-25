@@ -3,26 +3,26 @@ const mineflayer = require('mineflayer');
 const serverConfig = {
     host: 'play.bananasmp.net',
     port: 25565,
-    username: 'FLAMEYT9819', // Replace with your username
-    version: '1.21.11'
+    username: 'FLAMEYT9819',
+    version: false // Isse server version apne aap auto-detect ho jayega
 };
 
 function createBot() {
     const bot = mineflayer.createBot(serverConfig);
 
     bot.on('spawn', () => {
-        console.log('Bot spawned in lobby.');
+        console.log('Bot spawned in lobby successfully!');
 
-        // Step 1: Auto login
+        // Auto login script
         setTimeout(() => {
-            bot.chat('/login 9991311456'); // Replace with your password
-            console.log('Sent login command. Waiting for GUI...');
+            bot.chat('/login 9991311456');
+            console.log('Login command sent!');
         }, 3000);
     });
 
-    // Step 2: Handle Chest GUI (Lifesteal selection)
+    // GUI/Menu auto click (Lifesteal selection)
     bot.on('windowOpen', async (window) => {
-        console.log('GUI Menu opened! Looking for Lifesteal...');
+        console.log('GUI Menu opened! Searching for Lifesteal...');
 
         setTimeout(() => {
             const lifestealSlot = window.slots.find(item => 
@@ -33,48 +33,44 @@ function createBot() {
             );
 
             if (lifestealSlot) {
-                console.log(`Found Lifesteal at slot ${lifestealSlot.slot}! Clicking...`);
+                console.log(`Lifesteal found at slot ${lifestealSlot.slot}! Clicking...`);
                 bot.clickWindow(lifestealSlot.slot, 0, 0);
             }
         }, 1500);
     });
 
-    // Resource Pack / Shaders Auto-Accept Code (PASTED HERE)
-    bot.on('resourcePack', (url, hash) => {
-        console.log('Resource pack detected. Auto-accepting...');
+    // Auto-accept server resource packs
+    bot.on('resourcePack', () => {
+        console.log('Accepting server resource pack...');
         bot.acceptResourcePack();
     });
 
-    // Step 3: Auto-eat logic
+    // Auto-eat food when hungry
     bot.on('physicsTick', () => {
         if (bot.food < 18) {
-            const item = bot.inventory.items().find(i => 
+            const food = bot.inventory.items().find(i => 
                 i.name.includes('steak') || 
                 i.name.includes('bread') || 
-                i.name.includes('carrot') || 
-                i.name.includes('porkchop') ||
-                i.name.includes('cooked')
+                i.name.includes('cooked') ||
+                i.name.includes('carrot')
             );
 
-            if (item) {
-                bot.equip(item, 'hand', (err) => {
-                    if (err) return;
-                    bot.consume((err) => {
-                        if (err) console.log('Error eating: ' + err);
-                    });
+            if (food) {
+                bot.equip(food, 'hand', (err) => {
+                    if (!err) bot.consume(() => {});
                 });
             }
         }
     });
 
-    // Step 4: Auto-reconnect
+    // Auto Reconnect if kicked
     bot.on('end', () => {
-        console.log('Bot disconnected. Reconnecting in 10 seconds...');
+        console.log('Bot disconnected! Reconnecting in 10 seconds...');
         setTimeout(createBot, 10000);
     });
 
     bot.on('error', (err) => {
-        console.log('Error:', err);
+        console.log('Bot Error:', err.message);
     });
 }
 
